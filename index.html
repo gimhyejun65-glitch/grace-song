@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#172d28">
+<meta name="description" content="마음과 상황에 어울리는 찬양을 찾아주는 은혜의 찬양">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>은혜의 찬양 | Grace Song</title>
+<style>
+:root{--bg:#f5f4ee;--ink:#1e302b;--muted:#69766f;--green:#244b3f;--mint:#dce9df;--gold:#c79d52;--white:#fff}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}
+header{padding:26px 22px 24px;background:linear-gradient(145deg,#19372f,#315d4d);color:white;border-radius:0 0 28px 28px}
+.top{font-size:12px;letter-spacing:2px;color:#d5e2d9}.brand{font-size:28px;font-weight:800;margin:8px 0 4px}.sub{font-size:13px;color:#d8e5dd}
+main{max-width:680px;margin:auto;padding:18px 16px 40px}
+.panel{background:white;border:1px solid #e8e8df;border-radius:20px;padding:18px;margin:0 0 14px;box-shadow:0 5px 18px #23382b0a}
+h2{font-size:17px;margin:0 0 12px}.hint{font-size:12px;color:var(--muted);line-height:1.55}
+textarea{width:100%;min-height:100px;border:1px solid #d8dfd8;border-radius:14px;padding:13px;font:inherit;resize:vertical;outline:none;background:#fcfcf9}
+textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px #244b3f15}
+button{border:0;border-radius:13px;padding:12px 15px;font:inherit;font-weight:700;cursor:pointer}
+.primary{width:100%;margin-top:10px;background:var(--green);color:white}.chiprow{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{background:#edf2ec;color:#345448;border:1px solid #dce7dd;padding:8px 11px;border-radius:99px;font-size:12px}
+.result{border:1px solid #e5e9e1;border-radius:16px;padding:15px;margin-top:12px;background:#fff}
+.tag{font-size:11px;color:#557362;background:#edf4ee;border-radius:99px;padding:5px 8px;display:inline-block}
+.songtitle{font-size:17px;font-weight:800;margin:10px 0 6px}
+.hiddenTitle{background:#f0f1eb;border:1px dashed #b7c4b8;border-radius:12px;padding:12px;color:#53645a;font-size:13px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.secondary{background:#edf2ec;color:#294b3d;font-size:12px}
+.scripture{border-left:3px solid var(--gold);padding:9px 12px;background:#faf8f1;border-radius:0 10px 10px 0;font-size:13px;line-height:1.6;margin-top:10px}
+.status{font-size:11px;color:#805f2e;background:#fbf4e5;padding:7px 9px;border-radius:9px;margin-top:10px;line-height:1.5}
+footer{text-align:center;color:#7b867e;font-size:11px;padding:8px 12px 26px;line-height:1.6}
+.empty{text-align:center;color:#758078;padding:20px 8px;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+ <div class="top">GRACE SONG · WORSHIP FINDER</div>
+ <img src="icon-192.png" alt="은혜의 찬양 앱 아이콘" style="width:68px;height:68px;border-radius:18px;margin-top:12px;box-shadow:0 5px 18px #0003">
+ <div class="brand">은혜의 찬양</div>
+ <div class="sub">마음의 이야기를 들려주면, 어울리는 찬양을 찾아드려요.</div>
+</header>
+<main>
+ <section class="panel">
+  <h2>오늘 어떤 찬양을 찾고 있나요?</h2>
+  <div class="hint">상황이나 마음을 편하게 적어 주세요. 예: 시험 때문에 불안하고 지칠 때 위로받고 싶어.</div>
+  <div class="chiprow">
+   <button class="chip" data-prompt="힘들고 지칠 때 위로가 되는 찬양">위로가 필요해요</button>
+   <button class="chip" data-prompt="하나님을 믿고 의지하고 싶을 때">믿음과 의지</button>
+   <button class="chip" data-prompt="감사하는 마음을 표현하고 싶을 때">감사</button>
+   <button class="chip" data-prompt="회개하고 다시 하나님께 나아가고 싶을 때">회개와 결단</button>
+  </div>
+  <textarea id="request" placeholder="지금 내 마음이나 원하는 찬양의 내용을 입력해 보세요."></textarea>
+  <button class="primary" id="search">어울리는 찬양 찾기</button>
+  <p class="hint">현재 버전은 예시 찬양 목록과 주제 키워드를 비교하는 체험용 추천 기능입니다. 실시간 생성형 AI 연결은 포함되어 있지 않습니다.</p>
+ </section>
+ <section class="panel">
+  <h2>추천 찬양</h2>
+  <div id="results" class="empty">마음을 입력하면 이곳에 찬양이 추천됩니다.</div>
+ </section>
+ <section class="panel">
+  <h2>안전성 안내</h2>
+  <p class="hint">찬양이나 단체의 신앙적·교단적 적합성은 제목만으로 판정할 수 없습니다. 이 체험판은 공식 검증기관의 최신 자료를 자동 조회하지 않으므로, 모든 곡의 상태를 '확인 필요'로 표시합니다. 실제 서비스에서는 교단·검증기관의 공식 발표 원문과 확인 날짜를 함께 제공해야 합니다.</p>
+ </section>
+</main>
+<footer>Grace Song · 찬양 추천 체험판<br>추천은 내장된 예시 데이터 기반이며, 실시간 AI·공식 이단 검증 조회는 아직 연결되지 않았습니다.</footer>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+}
+</script>
+<script>
+const songs = [
+ {title:"주가 일하시네",themes:["위로","신뢰","믿음","기다림","힘듦"],desc:"내가 모든 상황을 해결할 수 없을 때에도 하나님을 신뢰하며 기다리는 마음을 담은 찬양으로 소개할 수 있어요.",verse:"시편 37:5 — 네 길을 여호와께 맡기라 그를 의지하면 그가 이루시고",tags:["신뢰","기다림"]},
+ {title:"주의 은혜라",themes:["감사","은혜","위로","사랑"],desc:"지나온 시간을 돌아보며 모든 순간에 함께한 은혜를 감사하는 주제와 어울려요.",verse:"고린도후서 12:9 — 내 은혜가 네게 족하도다",tags:["은혜","감사"]},
+ {title:"내 영혼은 안전합니다",themes:["위로","불안","평안","두려움","힘듦"],desc:"상황이 흔들려도 하나님 안에서 평안을 구하고 싶은 마음과 연결해 볼 수 있어요.",verse:"시편 46:1 — 하나님은 우리의 피난처시요 힘이시니",tags:["평안","위로"]},
+ {title:"나는 주를 섬기는 것에 후회가 없습니다",themes:["믿음","결단","헌신","의지"],desc:"하나님을 따르겠다는 믿음과 삶의 방향을 다시 다짐하고 싶을 때 어울리는 주제예요.",verse:"여호수아 24:15 — 오직 나와 내 집은 여호와를 섬기겠노라",tags:["믿음","결단"]},
+ {title:"감사",themes:["감사","기쁨","은혜"],desc:"평범한 하루와 주어진 것들을 돌아보며 감사의 마음을 표현하고 싶을 때 선택할 수 있어요.",verse:"데살로니가전서 5:18 — 범사에 감사하라",tags:["감사","기쁨"]},
+ {title:"주의 사랑을 주의 선하심을",themes:["사랑","예배","감사","은혜"],desc:"하나님의 사랑과 선하심을 기억하며 예배하고 싶은 마음과 잘 연결돼요.",verse:"시편 23:6 — 내 평생에 선하심과 인자하심이 반드시 나를 따르리니",tags:["사랑","예배"]},
+ {title:"회복시키소서",themes:["회개","회복","새출발","기도"],desc:"마음을 돌아보고 하나님께 다시 나아가며 회복을 구하는 주제에 어울려요.",verse:"시편 51:10 — 내 안에 정직한 영을 새롭게 하소서",tags:["회개","회복"]}
+];
+const request=document.getElementById('request'), results=document.getElementById('results');
+document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{request.value=b.dataset.prompt;request.focus()}));
+function recommend(){
+ const q=request.value.trim();
+ if(!q){results.innerHTML='<div class="empty">먼저 원하는 상황이나 마음을 입력해 주세요.</div>';return}
+ const words={
+  "위로":["위로","힘듦","지침","외로","슬픔","불안","두려움","걱정","시험"],
+  "믿음":["믿음","의지","신뢰","하나님을 믿","맡기","기다림"],
+  "감사":["감사","고마","은혜"],
+  "회개":["회개","잘못","돌아","새롭게","회복"],
+  "결단":["결단","헌신","섬기","다짐"]
+ };
+ let scores=songs.map(s=>{
+  let score=s.themes.reduce((n,t)=>n+(q.toLowerCase().includes(t.toLowerCase())?3:0),0);
+  for(const [theme,arr] of Object.entries(words)) if(arr.some(w=>q.includes(w)) && s.themes.includes(theme)) score+=2;
+  return {...s,score};
+ }).sort((a,b)=>b.score-a.score);
+ if(scores[0].score===0) scores=songs.filter(s=>s.themes.includes("위로")||s.themes.includes("믿음"));
+ render(scores.slice(0,3));
+}
+function render(items){
+ results.innerHTML='';
+ items.forEach((s,i)=>{
+  const card=document.createElement('article');card.className='result';
+  card.innerHTML=`<span class="tag">추천 ${i+1} · ${s.tags.join(' · ')}</span>
+   <div class="hiddenTitle" id="title-${i}">🎵 찬양 제목은 아직 숨겨져 있어요.</div>
+   <div class="songtitle" id="shown-${i}" hidden>${s.title}</div>
+   <p class="hint">${s.desc}</p>
+   <div class="scripture">📖 ${s.verse}</div>
+   <div class="actions"><button class="secondary" data-reveal="${i}">제목 확인하기</button><button class="secondary" data-youtube="${i}">유튜브에서 찾기</button></div>
+   <div class="status">안전성: 확인 필요 · 공식 자료를 통한 별도 확인이 필요합니다.</div>`;
+  results.appendChild(card);
+  card.querySelector('[data-reveal]').addEventListener('click',()=>{card.querySelector(`#title-${i}`).hidden=true;card.querySelector(`#shown-${i}`).hidden=false});
+  card.querySelector('[data-youtube]').addEventListener('click',()=>window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(s.title+' 찬양 공식'),'_blank','noopener'));
+ });
+}
+document.getElementById('search').addEventListener('click',recommend);
+request.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')recommend()});
+</script>
+</body></html>
