@@ -11,7 +11,7 @@
 <title>은혜의 찬양 | Grace Song</title>
 <style>
 :root{--bg:#f5f4ee;--ink:#1e302b;--muted:#69766f;--green:#244b3f;--mint:#dce9df;--gold:#c79d52;--white:#fff}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;padding-bottom:100px}
 header{padding:26px 22px 24px;background:linear-gradient(145deg,#19372f,#315d4d);color:white;border-radius:0 0 28px 28px}
 .top{font-size:12px;letter-spacing:2px;color:#d5e2d9}.brand{font-size:28px;font-weight:800;margin:8px 0 4px}.sub{font-size:13px;color:#d8e5dd}
 main{max-width:680px;margin:auto;padding:18px 16px 40px}
@@ -28,10 +28,24 @@ button{border:0;border-radius:13px;padding:12px 15px;font:inherit;font-weight:70
 .hiddenTitle{background:#f0f1eb;border:1px dashed #b7c4b8;border-radius:12px;padding:12px;color:#53645a;font-size:13px}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .secondary{background:#edf2ec;color:#294b3d;font-size:12px}
-.audio-btn{background:#e8f4ed;color:#1e4b38;border:1px solid #cce5d4;font-size:12px}
+.play-btn{background:#244b3f;color:white;font-size:12px}
 .scripture{border-left:3px solid var(--gold);padding:9px 12px;background:#faf8f1;border-radius:0 10px 10px 0;font-size:13px;line-height:1.6;margin-top:10px}
 .status{font-size:11px;color:#805f2e;background:#fbf4e5;padding:7px 9px;border-radius:9px;margin-top:10px;line-height:1.5}
-.audio-player-box{margin-top:10px;padding:12px;background:#f3f7f4;border-radius:12px;display:none;align-items:center;justify-content:space-between;font-size:12px;color:#244b3f;border:1px solid #d4e2d8}
+/* 하단 고정 플레이어바 (음악다운 앱 스타일) */
+.fixed-player{position:fixed;bottom:0;left:0;right:0;background:#19372f;color:white;padding:12px 16px;display:none;align-items:center;justify-content:space-between;box-shadow:0 -4px 20px rgba(0,0,0,0.25);z-index:1000;border-top-left-radius:20px;border-top-right-radius:20px}
+.player-info{display:flex;flex-direction:column;overflow:hidden;padding-right:10px}
+.player-title{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player-sub{font-size:11px;color:#a3c1b5;margin-top:2px}
+.player-controls{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.player-controls button{background:rgba(255,255,255,0.15);color:white;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;padding:0;font-size:14px}
+.player-controls button.close-p{background:transparent;font-size:18px;color:#a3c1b5}
+/* 모달 비디오 창 */
+.modal-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:2000;padding:16px}
+.modal-content{background:#111;width:100%;max-width:600px;border-radius:16px;overflow:hidden;position:relative}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#19372f;color:white;font-size:14px;font-weight:700}
+.modal-close{background:none;color:white;font-size:18px;padding:0;cursor:pointer}
+.modal-body{width:100%;aspect-ratio:16/9;background:#000}
+.modal-body iframe{width:100%;height:100%;border:0}
 footer{text-align:center;color:#7b867e;font-size:11px;padding:8px 12px 26px;line-height:1.6}
 .empty{text-align:center;color:#758078;padding:20px 8px;font-size:13px}
 </style>
@@ -46,7 +60,7 @@ footer{text-align:center;color:#7b867e;font-size:11px;padding:8px 12px 26px;line
 <main>
  <section class="panel">
   <h2>오늘 어떤 찬양을 찾고 있나요?</h2>
-  <div class="hint">친구 관계, 성적 고민, 진로, 불안 등 고민을 편하게 적어 주세요. 예: 시험 성적이 떨어져서 속상하고 친구랑 다퉜을 때.</div>
+  <div class="hint">친구 관계, 성적 고민, 진로, 불안 등 고민을 편하게 적어 주세요. 예: 성적이 떨어져서 속상하고 지칠 때.</div>
   <div class="chiprow">
    <button class="chip" data-prompt="시험 성적과 학업 스트레스로 지칠 때">성적·학업 고민</button>
    <button class="chip" data-prompt="친구 관계나 따돌림으로 상처받았을 때">친구 관계 고민</button>
@@ -65,6 +79,30 @@ footer{text-align:center;color:#7b867e;font-size:11px;padding:8px 12px 26px;line
   <p class="hint">찬양이나 단체의 신앙적·교단적 적합성은 제목만으로 판정할 수 없습니다. 이 체험판은 공식 검증기관의 최신 자료를 자동 조회하지 않으므로, 모든 곡의 상태를 '확인 필요'로 표시합니다.</p>
  </section>
 </main>
+
+<!-- 하단 고정 플레이어바 -->
+<div class="fixed-player" id="fixedPlayer">
+ <div class="player-info">
+  <div class="player-title" id="playerTitle">재생 중인 찬양 없음</div>
+  <div class="player-sub">앱 내부 재생 중</div>
+ </div>
+ <div class="player-controls">
+  <button id="expandPlayer" title="화면으로 보기">📺</button>
+  <button class="close-p" id="closePlayer" title="닫기">✕</button>
+ </div>
+</div>
+
+<!-- 영상 모달 창 -->
+<div class="modal-bg" id="videoModal">
+ <div class="modal-content">
+  <div class="modal-header">
+   <span id="modalTitle">찬양 재생</span>
+   <button class="modal-close" id="modalClose">✕</button>
+  </div>
+  <div class="modal-body" id="modalBody"></div>
+ </div>
+</div>
+
 <footer>Grace Song · 찬양 추천 체험판</footer>
 <script>
 if ("serviceWorker" in navigator) {
@@ -73,16 +111,19 @@ if ("serviceWorker" in navigator) {
 </script>
 <script>
 const songs = [
- {title:"주가 일하시네",themes:["위로","신뢰","믿음","기다림","힘듦","학업","불안","성적"],desc:"내 힘으로 성적이나 상황을 바꿀 수 없을 때, 주님을 신뢰하며 맡겨드리는 찬양입니다.",verse:"시편 37:5 — 네 길을 여호와께 맡기라 그를 의지하면 그가 이루시고",tags:["신뢰","학업·불안"],notes:[261.63, 329.63, 392.00, 523.25]},
- {title:"주의 은혜라",themes:["감사","은혜","위로","사랑","성적","노력"],desc:"남들보다 뒤처진 것 같고 애쓴 만큼 결과가 안 나와도 주님의 은혜를 의지하게 해요.",verse:"고린도후서 12:9 — 내 은혜가 네게 족하도다",tags:["은혜","위로"],notes:[220.00, 261.63, 329.63, 440.00]},
- {title:"내 영혼은 안전합니다",themes:["위로","불안","평안","두려움","힘듦","친구","상처","외로움"],desc:"친구와의 갈등이나 외로움으로 마음이 흔들릴 때 주님 품 안에서 참된 평안을 얻어요.",verse:"시편 46:1 — 하나님은 우리의 피난처시요 힘이시니",tags:["평안","관계회복"],notes:[196.00, 246.94, 293.66, 392.00]},
- {title:"나는 주를 섬기는 것에 후회가 없습니다",themes:["믿음","결단","헌신","의지","진로","고민","미래"],desc:"앞날의 진로와 미래가 불확실하고 막막할 때 주님을 향한 믿음을 다시 붙잡게 합니다.",verse:"여호수아 24:15 — 오직 나와 내 집은 여호와를 섬기겠노라",tags:["믿음","진로"],notes:[293.66, 369.99, 440.00, 587.33]},
- {title:"십자가의 길 새길",themes:["위로","고난","친구","상처","용서","관계"],desc:"친구와의 오해나 다툼으로 상처받고 마음이 아플 때 십자가의 사랑으로 품게 해줘요.",verse:"베드로전서 2:21 — 이를 위하여 너희가 부르심을 받았으니",tags:["용서","관계회복"],notes:[329.63, 392.00, 493.88, 659.25]},
- {title:"야곱의 축복",themes:["사랑","축복","관계","가족","위로","격려"],desc:"주변 사람들과의 관계 속에서 지친 나를 축복해주시고 위로해주시는 따뜻한 곡이에요.",verse:"민수기 6:24-26 — 여호와는 네게 복을 주시고 너를 지키시기를 원하며",tags:["사랑","축복"],notes:[261.63, 329.63, 392.00, 523.25]},
- {title:"괴로울 때 주님의 얼굴 보라",themes:["위로","슬픔","고민","외로움","가족","절망"],desc:"학업, 친구, 가정의 고민으로 마음이 무너져 내릴 때 주님께 시선을 돌리게 합니다.",verse:"시편 34:4 — 내가 여호와께 구하매 내게 응답하시고",tags:["위로","고민해결"],notes:[220.00, 277.18, 329.63, 440.00]}
+ {title:"주가 일하시네",qid:"W859c25W_9g",themes:["위로","신뢰","믿음","기다림","힘듦","학업","불안","성적"],desc:"내 힘으로 성적이나 상황을 바꿀 수 없을 때, 주님을 신뢰하며 맡겨드리는 찬양입니다.",verse:"시편 37:5 — 네 길을 여호와께 맡기라 그를 의지하면 그가 이루시고",tags:["신뢰","학업·불안"]},
+ {title:"주의 은혜라",qid:"6g1k8a9Q4wY",themes:["감사","은혜","위로","사랑","성적","노력"],desc:"남들보다 뒤처진 것 같고 애쓴 만큼 결과가 안 나와도 주님의 은혜를 의지하게 해요.",verse:"고린도후서 12:9 — 내 은혜가 네게 족하도다",tags:["은혜","위로"]},
+ {title:"내 영혼은 안전합니다",qid:"78K7lV9t_4s",themes:["위로","불안","평안","두려움","힘듦","친구","상처","외로움"],desc:"친구와의 갈등이나 외로움으로 마음이 흔들릴 때 주님 품 안에서 참된 평안을 얻어요.",verse:"시편 46:1 — 하나님은 우리의 피난처시요 힘이시니",tags:["평안","관계회복"]},
+ {title:"나는 주를 섬기는 것에 후회가 없습니다",qid:"8Q3x9f4Y1wA",themes:["믿음","결단","헌신","의지","진로","고민","미래"],desc:"앞날의 진로와 미래가 불확실하고 막막할 때 주님을 향한 믿음을 다시 붙잡게 합니다.",verse:"여호수아 24:15 — 오직 나와 내 집은 여호와를 섬기겠노라",tags:["믿음","진로"]},
+ {title:"십자가의 길 새길",qid:"9Z5c3v2B1nM",themes:["위로","고난","친구","상처","용서","관계"],desc:"친구와의 오해나 다툼으로 상처받고 마음이 아플 때 십자가의 사랑으로 품게 해줘요.",verse:"베드로전서 2:21 — 이를 위하여 너희가 부르심을 받았으니",tags:["용서","관계회복"]},
+ {title:"야곱의 축복",qid:"3k8L2n5M6vQ",themes:["사랑","축복","관계","가족","위로","격려"],desc:"주변 사람들과의 관계 속에서 지친 나를 축복해주시고 위로해주시는 따뜻한 곡이에요.",verse:"민수기 6:24-26 — 여호와는 네게 복을 주시고 너를 지키시기를 원하며",tags:["사랑","축복"]},
+ {title:"괴로울 때 주님의 얼굴 보라",qid:"1v5C4x7N8bM",themes:["위로","슬픔","고민","외로움","가족","절망"],desc:"학업, 친구, 가정의 고민으로 마음이 무너져 내릴 때 주님께 시선을 돌리게 합니다.",verse:"시편 34:4 — 내가 여호와께 구하매 내게 응답하시고",tags:["위로","고민해결"]}
 ];
 
 const request=document.getElementById('request'), results=document.getElementById('results');
+const fixedPlayer=document.getElementById('fixedPlayer'), playerTitle=document.getElementById('playerTitle');
+const videoModal=document.getElementById('videoModal'), modalBody=document.getElementById('modalBody'), modalTitle=document.getElementById('modalTitle');
+
 document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{request.value=b.dataset.prompt;request.focus()}));
 
 function recommend(){
@@ -112,16 +153,38 @@ function recommend(){
  render(scores.slice(0,3));
 }
 
-let activeAudioCtx = null;
-let activeTimer = null;
+let currentQid = "";
+let currentTitle = "";
 
-function stopAudio(){
- if(activeTimer) { clearInterval(activeTimer); activeTimer = null; }
- if(activeAudioCtx) { activeAudioCtx.close(); activeAudioCtx = null; }
+function playSong(qid, title){
+ currentQid = qid;
+ currentTitle = title;
+ playerTitle.textContent = title;
+ fixedPlayer.style.display = 'flex';
+ 
+ const embedUrl = `https://www.youtube.com/embed/${qid}?autoplay=1&enablejsapi=1`;
+ modalBody.innerHTML = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+ modalTitle.textContent = title;
 }
 
+document.getElementById('closePlayer').addEventListener('click',()=>{
+ fixedPlayer.style.display = 'none';
+ modalBody.innerHTML = '';
+});
+
+document.getElementById('expandPlayer').addEventListener('click',()=>{
+ if(currentQid) videoModal.style.display = 'flex';
+});
+
+document.getElementById('modalClose').addEventListener('click',()=>{
+ videoModal.style.display = 'none';
+});
+
+videoModal.addEventListener('click',(e)=>{
+ if(e.target === videoModal) videoModal.style.display = 'none';
+});
+
 function render(items){
- stopAudio();
  results.innerHTML='';
  items.forEach((s,i)=>{
   const card=document.createElement('article');card.className='result';
@@ -132,52 +195,15 @@ function render(items){
    <div class="scripture">📖 ${s.verse}</div>
    <div class="actions">
     <button class="secondary" data-reveal="${i}">제목 확인하기</button>
-    <button class="secondary" data-youtube="${i}">🔗 유튜브로 듣기</button>
-    <button class="audio-btn" data-audio="${i}">🎹 앱 안에서 반주/화음 듣기</button>
-   </div>
-   <div class="audio-player-box" id="audiobox-${i}">
-    <span>✨ 잔잔한 화음 반주 재생 중...</span>
-    <button class="secondary" data-stopaudio="${i}">반주 멈추기</button>
+    <button class="play-btn" data-play="${i}">▶ 앱 안에서 바로 듣기</button>
+    <button class="secondary" data-youtube="${i}">🔗 유튜브 앱으로 열기</button>
    </div>
    <div class="status">안전성: 확인 필요 · 공식 자료를 통한 별도 확인이 필요합니다.</div>`;
   results.appendChild(card);
   
   card.querySelector('[data-reveal]').addEventListener('click',()=>{card.querySelector(`#title-${i}`).hidden=true;card.querySelector(`#shown-${i}`).hidden=false});
-  card.querySelector('[data-youtube]').addEventListener('click',()=>window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(s.title+' 찬양 공식'),'_blank','noopener'));
-  
-  const audioBox = card.querySelector(`#audiobox-${i}`);
-  card.querySelector('[data-audio]').addEventListener('click',()=>{
-   stopAudio();
-   document.querySelectorAll('.audio-player-box').forEach(b=>b.style.display='none');
-   audioBox.style.display='flex';
-   
-   try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    activeAudioCtx = new AudioContext();
-    let idx = 0;
-    activeTimer = setInterval(() => {
-     if(!activeAudioCtx) return;
-     const osc = activeAudioCtx.createOscillator();
-     const gain = activeAudioCtx.createGain();
-     osc.type = 'triangle';
-     osc.frequency.setValueAtTime(s.notes[idx % s.notes.length], activeAudioCtx.currentTime);
-     gain.gain.setValueAtTime(0.15, activeAudioCtx.currentTime);
-     gain.gain.exponentialRampToValueAtTime(0.001, activeAudioCtx.currentTime + 1.2);
-     osc.connect(gain);
-     gain.connect(activeAudioCtx.destination);
-     osc.start();
-     osc.stop(activeAudioCtx.currentTime + 1.2);
-     idx++;
-    }, 1200);
-   } catch(e) {
-    alert("오디오 재생을 지원하지 않는 환경입니다.");
-   }
-  });
-
-  card.querySelector('[data-stopaudio]').addEventListener('click',()=>{
-   stopAudio();
-   audioBox.style.display='none';
-  });
+  card.querySelector('[data-play]').addEventListener('click',()=>playSong(s.qid, s.title));
+  card.querySelector('[data-youtube]').addEventListener('click',()=>window.open('https://www.youtube.com/watch?v='+s.qid,'_blank','noopener'));
  });
 }
 document.getElementById('search').addEventListener('click',recommend);
