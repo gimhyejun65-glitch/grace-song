@@ -28,14 +28,10 @@ button{border:0;border-radius:13px;padding:12px 15px;font:inherit;font-weight:70
 .hiddenTitle{background:#f0f1eb;border:1px dashed #b7c4b8;border-radius:12px;padding:12px;color:#53645a;font-size:13px}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .secondary{background:#edf2ec;color:#294b3d;font-size:12px}
-.gold-btn{background:#fbf4e5;color:#7a561e;border:1px solid #ead8b1;font-size:12px}
+.audio-btn{background:#e8f4ed;color:#1e4b38;border:1px solid #cce5d4;font-size:12px}
 .scripture{border-left:3px solid var(--gold);padding:9px 12px;background:#faf8f1;border-radius:0 10px 10px 0;font-size:13px;line-height:1.6;margin-top:10px}
 .status{font-size:11px;color:#805f2e;background:#fbf4e5;padding:7px 9px;border-radius:9px;margin-top:10px;line-height:1.5}
-.player-wrap{margin-top:12px;display:none}
-.player-box{border-radius:12px;overflow:hidden;background:#111;position:relative;width:100%;aspect-ratio:16/9}
-.player-box iframe{width:100%;height:100%;border:0}
-.player-tip{font-size:11px;color:#69766f;margin-top:6px;display:flex;justify-content:space-between;align-items:center}
-.fallback-link{color:#244b3f;font-weight:700;text-decoration:underline;cursor:pointer;background:none;border:0;padding:0;font-size:11px}
+.audio-player-box{margin-top:10px;padding:12px;background:#f3f7f4;border-radius:12px;display:none;align-items:center;justify-content:space-between;font-size:12px;color:#244b3f;border:1px solid #d4e2d8}
 footer{text-align:center;color:#7b867e;font-size:11px;padding:8px 12px 26px;line-height:1.6}
 .empty{text-align:center;color:#758078;padding:20px 8px;font-size:13px}
 </style>
@@ -50,14 +46,14 @@ footer{text-align:center;color:#7b867e;font-size:11px;padding:8px 12px 26px;line
 <main>
  <section class="panel">
   <h2>오늘 어떤 찬양을 찾고 있나요?</h2>
-  <div class="hint">상황이나 마음을 편하게 적어 주세요. 예: 시험 때문에 불안하고 지칠 때 위로받고 싶어.</div>
+  <div class="hint">친구 관계, 성적 고민, 진로, 불안 등 고민을 편하게 적어 주세요. 예: 시험 성적이 떨어져서 속상하고 친구랑 다퉜을 때.</div>
   <div class="chiprow">
-   <button class="chip" data-prompt="힘들고 지칠 때 위로가 되는 찬양">위로가 필요해요</button>
-   <button class="chip" data-prompt="하나님을 믿고 의지하고 싶을 때">믿음과 의지</button>
-   <button class="chip" data-prompt="감사하는 마음을 표현하고 싶을 때">감사</button>
-   <button class="chip" data-prompt="회개하고 다시 하나님께 나아가고 싶을 때">회개와 결단</button>
+   <button class="chip" data-prompt="시험 성적과 학업 스트레스로 지칠 때">성적·학업 고민</button>
+   <button class="chip" data-prompt="친구 관계나 따돌림으로 상처받았을 때">친구 관계 고민</button>
+   <button class="chip" data-prompt="진로와 미래에 대한 막막함과 불안함이 들 때">진로·불안</button>
+   <button class="chip" data-prompt="가족 갈등이나 외로움으로 마음이 힘들 때">가족·외로움</button>
   </div>
-  <textarea id="request" placeholder="지금 내 마음이나 원하는 찬양의 내용을 입력해 보세요."></textarea>
+  <textarea id="request" placeholder="지금 내 마음이나 고민을 자유롭게 입력해 보세요."></textarea>
   <button class="primary" id="search">어울리는 찬양 찾기</button>
  </section>
  <section class="panel">
@@ -77,35 +73,55 @@ if ("serviceWorker" in navigator) {
 </script>
 <script>
 const songs = [
- {title:"주가 일하시네",query:"주가 일하시네 찬양",themes:["위로","신뢰","믿음","기다림","힘듦"],desc:"내가 모든 상황을 해결할 수 없을 때에도 하나님을 신뢰하며 기다리는 마음을 담은 찬양입니다.",verse:"시편 37:5 — 네 길을 여호와께 맡기라 그를 의지하면 그가 이루시고",tags:["신뢰","기다림"]},
- {title:"주의 은혜라",query:"주의 은혜라 찬양",themes:["감사","은혜","위로","사랑"],desc:"지나온 시간을 돌아보며 모든 순간에 함께한 은혜를 감사하는 주제와 어울려요.",verse:"고린도후서 12:9 — 내 은혜가 네게 족하도다",tags:["은혜","감사"]},
- {title:"내 영혼은 안전합니다",query:"내 영혼은 안전합니다 찬양",themes:["위로","불안","평안","두려움","힘듦"],desc:"상황이 흔들려도 하나님 안에서 평안을 구하고 싶은 마음과 연결해 볼 수 있어요.",verse:"시편 46:1 — 하나님은 우리의 피난처시요 힘이시니",tags:["평안","위로"]},
- {title:"나는 주를 섬기는 것에 후회가 없습니다",query:"나는 주를 섬기는 것에 후회가 없습니다 찬양",themes:["믿음","결단","헌신","의지"],desc:"하나님을 따르겠다는 믿음과 삶의 방향을 다시 다짐하고 싶을 때 어울리는 주제예요.",verse:"여호수아 24:15 — 오직 나와 내 집은 여호와를 섬기겠노라",tags:["믿음","결단"]},
- {title:"감사",query:"범사에 감사 찬양",themes:["감사","기쁨","은혜"],desc:"평범한 하루와 주어진 것들을 돌아보며 감사의 마음을 표현하고 싶을 때 선택할 수 있어요.",verse:"데살로니가전서 5:18 — 범사에 감사하라",tags:["감사","기쁨"]},
- {title:"주의 사랑을 주의 선하심을",query:"주의 사랑을 주의 선하심을 찬양",themes:["사랑","예배","감사","은혜"],desc:"하나님의 사랑과 선하심을 기억하며 예배하고 싶은 마음과 잘 연결돼요.",verse:"시편 23:6 — 내 평생에 선하심과 인자하심이 반드시 나를 따르리니",tags:["사랑","예배"]},
- {title:"회복시키소서",query:"회복시키소서 찬양",themes:["회개","회복","새출발","기도"],desc:"마음을 돌아보고 하나님께 다시 나아가며 회복을 구하는 주제에 어울려요.",verse:"시편 51:10 — 내 안에 정직한 영을 새롭게 하소서",tags:["회개","회복"]}
+ {title:"주가 일하시네",themes:["위로","신뢰","믿음","기다림","힘듦","학업","불안","성적"],desc:"내 힘으로 성적이나 상황을 바꿀 수 없을 때, 주님을 신뢰하며 맡겨드리는 찬양입니다.",verse:"시편 37:5 — 네 길을 여호와께 맡기라 그를 의지하면 그가 이루시고",tags:["신뢰","학업·불안"],notes:[261.63, 329.63, 392.00, 523.25]},
+ {title:"주의 은혜라",themes:["감사","은혜","위로","사랑","성적","노력"],desc:"남들보다 뒤처진 것 같고 애쓴 만큼 결과가 안 나와도 주님의 은혜를 의지하게 해요.",verse:"고린도후서 12:9 — 내 은혜가 네게 족하도다",tags:["은혜","위로"],notes:[220.00, 261.63, 329.63, 440.00]},
+ {title:"내 영혼은 안전합니다",themes:["위로","불안","평안","두려움","힘듦","친구","상처","외로움"],desc:"친구와의 갈등이나 외로움으로 마음이 흔들릴 때 주님 품 안에서 참된 평안을 얻어요.",verse:"시편 46:1 — 하나님은 우리의 피난처시요 힘이시니",tags:["평안","관계회복"],notes:[196.00, 246.94, 293.66, 392.00]},
+ {title:"나는 주를 섬기는 것에 후회가 없습니다",themes:["믿음","결단","헌신","의지","진로","고민","미래"],desc:"앞날의 진로와 미래가 불확실하고 막막할 때 주님을 향한 믿음을 다시 붙잡게 합니다.",verse:"여호수아 24:15 — 오직 나와 내 집은 여호와를 섬기겠노라",tags:["믿음","진로"],notes:[293.66, 369.99, 440.00, 587.33]},
+ {title:"십자가의 길 새길",themes:["위로","고난","친구","상처","용서","관계"],desc:"친구와의 오해나 다툼으로 상처받고 마음이 아플 때 십자가의 사랑으로 품게 해줘요.",verse:"베드로전서 2:21 — 이를 위하여 너희가 부르심을 받았으니",tags:["용서","관계회복"],notes:[329.63, 392.00, 493.88, 659.25]},
+ {title:"야곱의 축복",themes:["사랑","축복","관계","가족","위로","격려"],desc:"주변 사람들과의 관계 속에서 지친 나를 축복해주시고 위로해주시는 따뜻한 곡이에요.",verse:"민수기 6:24-26 — 여호와는 네게 복을 주시고 너를 지키시기를 원하며",tags:["사랑","축복"],notes:[261.63, 329.63, 392.00, 523.25]},
+ {title:"괴로울 때 주님의 얼굴 보라",themes:["위로","슬픔","고민","외로움","가족","절망"],desc:"학업, 친구, 가정의 고민으로 마음이 무너져 내릴 때 주님께 시선을 돌리게 합니다.",verse:"시편 34:4 — 내가 여호와께 구하매 내게 응답하시고",tags:["위로","고민해결"],notes:[220.00, 277.18, 329.63, 440.00]}
 ];
+
 const request=document.getElementById('request'), results=document.getElementById('results');
 document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{request.value=b.dataset.prompt;request.focus()}));
+
 function recommend(){
  const q=request.value.trim();
- if(!q){results.innerHTML='<div class="empty">먼저 원하는 상황이나 마음을 입력해 주세요.</div>';return}
+ if(!q){results.innerHTML='<div class="empty">먼저 고민이나 마음을 편하게 입력해 주세요.</div>';return}
+ 
  const words={
-  "위로":["위로","힘듦","지침","외로","슬픔","불안","두려움","걱정","시험"],
-  "믿음":["믿음","의지","신뢰","하나님을 믿","맡기","기다림"],
-  "감사":["감사","고마","은혜"],
-  "회개":["회개","잘못","돌아","새롭게","회복"],
-  "결단":["결단","헌신","섬기","다짐"]
+  "위로":["위로","힘듦","지침","외로","슬픔","불안","두려움","걱정","시험","속상","막막","답답","스트레스"],
+  "믿음":["믿음","의지","신뢰","하나님을 믿","맡기","기다림","진로","미래","앞날"],
+  "감사":["감사","고마","은혜","만족"],
+  "회개":["회개","잘못","돌아","새롭게","회복","용서","다툼","싸움"],
+  "결단":["결단","헌신","섬기","다짐","노력","공부","성적"],
+  "성적":["성적","시험","점수","공부","학업","떨어졌","대학","등급"],
+  "친구":["친구","관계","따돌림","왕따","싸웠","다툼","오해","섭섭","선생님","학교"],
+  "가족":["가족","부모님","엄마","아빠","형제","집안","갈등"]
  };
+
  let scores=songs.map(s=>{
   let score=s.themes.reduce((n,t)=>n+(q.toLowerCase().includes(t.toLowerCase())?3:0),0);
-  for(const [theme,arr] of Object.entries(words)) if(arr.some(w=>q.includes(w)) && s.themes.includes(theme)) score+=2;
+  for(const [theme,arr] of Object.entries(words)) {
+   if(arr.some(w=>q.includes(w)) && s.themes.includes(theme)) score+=3;
+  }
   return {...s,score};
  }).sort((a,b)=>b.score-a.score);
+
  if(scores[0].score===0) scores=songs.filter(s=>s.themes.includes("위로")||s.themes.includes("믿음"));
  render(scores.slice(0,3));
 }
+
+let activeAudioCtx = null;
+let activeTimer = null;
+
+function stopAudio(){
+ if(activeTimer) { clearInterval(activeTimer); activeTimer = null; }
+ if(activeAudioCtx) { activeAudioCtx.close(); activeAudioCtx = null; }
+}
+
 function render(items){
+ stopAudio();
  results.innerHTML='';
  items.forEach((s,i)=>{
   const card=document.createElement('article');card.className='result';
@@ -116,32 +132,51 @@ function render(items){
    <div class="scripture">📖 ${s.verse}</div>
    <div class="actions">
     <button class="secondary" data-reveal="${i}">제목 확인하기</button>
-    <button class="gold-btn" data-play="${i}">▶ 앱 안에서 바로 듣기</button>
+    <button class="secondary" data-youtube="${i}">🔗 유튜브로 듣기</button>
+    <button class="audio-btn" data-audio="${i}">🎹 앱 안에서 반주/화음 듣기</button>
    </div>
-   <div class="player-wrap" id="wrap-${i}">
-    <div class="player-box" id="player-${i}"></div>
-    <div class="player-tip">
-     <span>재생이 제한된 영상일 경우:</span>
-     <button class="fallback-link" data-ext="${i}">유튜브에서 직접 열기 ↗</button>
-    </div>
+   <div class="audio-player-box" id="audiobox-${i}">
+    <span>✨ 잔잔한 화음 반주 재생 중...</span>
+    <button class="secondary" data-stopaudio="${i}">반주 멈추기</button>
    </div>
    <div class="status">안전성: 확인 필요 · 공식 자료를 통한 별도 확인이 필요합니다.</div>`;
   results.appendChild(card);
+  
   card.querySelector('[data-reveal]').addEventListener('click',()=>{card.querySelector(`#title-${i}`).hidden=true;card.querySelector(`#shown-${i}`).hidden=false});
-  card.querySelector('[data-play]').addEventListener('click',()=>{
-   const wrap=card.querySelector(`#wrap-${i}`);
-   const box=card.querySelector(`#player-${i}`);
-   if(wrap.style.display==='block'){
-    wrap.style.display='none';
-    box.innerHTML='';
-   }else{
-    wrap.style.display='block';
-    const searchUrl=`https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(s.query)}`;
-    box.innerHTML=`<iframe src="${searchUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+  card.querySelector('[data-youtube]').addEventListener('click',()=>window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(s.title+' 찬양 공식'),'_blank','noopener'));
+  
+  const audioBox = card.querySelector(`#audiobox-${i}`);
+  card.querySelector('[data-audio]').addEventListener('click',()=>{
+   stopAudio();
+   document.querySelectorAll('.audio-player-box').forEach(b=>b.style.display='none');
+   audioBox.style.display='flex';
+   
+   try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    activeAudioCtx = new AudioContext();
+    let idx = 0;
+    activeTimer = setInterval(() => {
+     if(!activeAudioCtx) return;
+     const osc = activeAudioCtx.createOscillator();
+     const gain = activeAudioCtx.createGain();
+     osc.type = 'triangle';
+     osc.frequency.setValueAtTime(s.notes[idx % s.notes.length], activeAudioCtx.currentTime);
+     gain.gain.setValueAtTime(0.15, activeAudioCtx.currentTime);
+     gain.gain.exponentialRampToValueAtTime(0.001, activeAudioCtx.currentTime + 1.2);
+     osc.connect(gain);
+     gain.connect(activeAudioCtx.destination);
+     osc.start();
+     osc.stop(activeAudioCtx.currentTime + 1.2);
+     idx++;
+    }, 1200);
+   } catch(e) {
+    alert("오디오 재생을 지원하지 않는 환경입니다.");
    }
   });
-  card.querySelector('[data-ext]').addEventListener('click',()=>{
-   window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(s.query),'_blank','noopener');
+
+  card.querySelector('[data-stopaudio]').addEventListener('click',()=>{
+   stopAudio();
+   audioBox.style.display='none';
   });
  });
 }
