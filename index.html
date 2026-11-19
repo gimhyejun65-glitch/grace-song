@@ -31,7 +31,7 @@ button{border:0;border-radius:13px;padding:12px 15px;font:inherit;font-weight:70
 .play-btn{background:#244b3f;color:white;font-size:12px}
 .scripture{border-left:3px solid var(--gold);padding:9px 12px;background:#faf8f1;border-radius:0 10px 10px 0;font-size:13px;line-height:1.6;margin-top:10px}
 .status{font-size:11px;color:#805f2e;background:#fbf4e5;padding:7px 9px;border-radius:9px;margin-top:10px;line-height:1.5}
-/* 하단 고정 플레이어바 (음악다운 앱 스타일) */
+/* 하단 고정 플레이어바 */
 .fixed-player{position:fixed;bottom:0;left:0;right:0;background:#19372f;color:white;padding:12px 16px;display:none;align-items:center;justify-content:space-between;box-shadow:0 -4px 20px rgba(0,0,0,0.25);z-index:1000;border-top-left-radius:20px;border-top-right-radius:20px}
 .player-info{display:flex;flex-direction:column;overflow:hidden;padding-right:10px}
 .player-title{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -39,7 +39,7 @@ button{border:0;border-radius:13px;padding:12px 15px;font:inherit;font-weight:70
 .player-controls{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .player-controls button{background:rgba(255,255,255,0.15);color:white;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;padding:0;font-size:14px}
 .player-controls button.close-p{background:transparent;font-size:18px;color:#a3c1b5}
-/* 모달 비디오 창 */
+/* 영상 모달 창 */
 .modal-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:2000;padding:16px}
 .modal-content{background:#111;width:100%;max-width:600px;border-radius:16px;overflow:hidden;position:relative}
 .modal-header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#19372f;color:white;font-size:14px;font-weight:700}
@@ -84,7 +84,7 @@ footer{text-align:center;color:#7b867e;font-size:11px;padding:8px 12px 26px;line
 <div class="fixed-player" id="fixedPlayer">
  <div class="player-info">
   <div class="player-title" id="playerTitle">재생 중인 찬양 없음</div>
-  <div class="player-sub">앱 내부 재생 중</div>
+  <div class="player-sub">앱 내부 스트리밍 재생 중</div>
  </div>
  <div class="player-controls">
   <button id="expandPlayer" title="화면으로 보기">📺</button>
@@ -154,11 +154,9 @@ function recommend(){
 }
 
 let currentQid = "";
-let currentTitle = "";
 
 function playSong(qid, title){
  currentQid = qid;
- currentTitle = title;
  playerTitle.textContent = title;
  fixedPlayer.style.display = 'flex';
  
