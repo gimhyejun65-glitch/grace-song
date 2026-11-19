@@ -26,11 +26,16 @@ button{border:0;border-radius:13px;padding:12px 15px;font:inherit;font-weight:70
 .tag{font-size:11px;color:#557362;background:#edf4ee;border-radius:99px;padding:5px 8px;display:inline-block}
 .songtitle{font-size:17px;font-weight:800;margin:10px 0 6px}
 .hiddenTitle{background:#f0f1eb;border:1px dashed #b7c4b8;border-radius:12px;padding:12px;color:#53645a;font-size:13px}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.secondary{background:#edf2ec;color:#294b3d;font-size:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.secondary{background:#edf2ec;color:#294b3d;font-size:12px}
+.gold-btn{background:#fbf4e5;color:#7a561e;border:1px solid #ead8b1;font-size:12px}
 .scripture{border-left:3px solid var(--gold);padding:9px 12px;background:#faf8f1;border-radius:0 10px 10px 0;font-size:13px;line-height:1.6;margin-top:10px}
 .status{font-size:11px;color:#805f2e;background:#fbf4e5;padding:7px 9px;border-radius:9px;margin-top:10px;line-height:1.5}
-.player-box{margin-top:12px;border-radius:12px;overflow:hidden;background:#000;display:none;position:relative;width:100%;aspect-ratio:16/9}
+.player-wrap{margin-top:12px;display:none}
+.player-box{border-radius:12px;overflow:hidden;background:#111;position:relative;width:100%;aspect-ratio:16/9}
 .player-box iframe{width:100%;height:100%;border:0}
+.player-tip{font-size:11px;color:#69766f;margin-top:6px;display:flex;justify-content:space-between;align-items:center}
+.fallback-link{color:#244b3f;font-weight:700;text-decoration:underline;cursor:pointer;background:none;border:0;padding:0;font-size:11px}
 footer{text-align:center;color:#7b867e;font-size:11px;padding:8px 12px 26px;line-height:1.6}
 .empty{text-align:center;color:#758078;padding:20px 8px;font-size:13px}
 </style>
@@ -72,13 +77,13 @@ if ("serviceWorker" in navigator) {
 </script>
 <script>
 const songs = [
- {title:"주가 일하시네",videoId:"D8v2g3K7K0s",themes:["위로","신뢰","믿음","기다림","힘듦"],desc:"내가 모든 상황을 해결할 수 없을 때에도 하나님을 신뢰하며 기다리는 마음을 담은 찬양입니다.",verse:"시편 37:5 — 네 길을 여호와께 맡기라 그를 의지하면 그가 이루시고",tags:["신뢰","기다림"]},
- {title:"주의 은혜라",videoId:"9Vj3N5x6v4A",themes:["감사","은혜","위로","사랑"],desc:"지나온 시간을 돌아보며 모든 순간에 함께한 은혜를 감사하는 주제와 어울려요.",verse:"고린도후서 12:9 — 내 은혜가 네게 족하도다",tags:["은혜","감사"]},
- {title:"내 영혼은 안전합니다",videoId:"3g3N3v2K7K0s",themes:["위로","불안","평안","두려움","힘듦"],desc:"상황이 흔들려도 하나님 안에서 평안을 구하고 싶은 마음과 연결해 볼 수 있어요.",verse:"시편 46:1 — 하나님은 우리의 피난처시요 힘이시니",tags:["평안","위로"]},
- {title:"나는 주를 섬기는 것에 후회가 없습니다",videoId:"5x6v4A9Vj3N",themes:["믿음","결단","헌신","의지"],desc:"하나님을 따르겠다는 믿음과 삶의 방향을 다시 다짐하고 싶을 때 어울리는 주제예요.",verse:"여호수아 24:15 — 오직 나와 내 집은 여호와를 섬기겠노라",tags:["믿음","결단"]},
- {title:"감사",videoId:"7K0s3g3N3v2K",themes:["감사","기쁨","은혜"],desc:"평범한 하루와 주어진 것들을 돌아보며 감사의 마음을 표현하고 싶을 때 선택할 수 있어요.",verse:"데살로니가전서 5:18 — 범사에 감사하라",tags:["감사","기쁨"]},
- {title:"주의 사랑을 주의 선하심을",videoId:"4A9Vj3N5x6v",themes:["사랑","예배","감사","은혜"],desc:"하나님의 사랑과 선하심을 기억하며 예배하고 싶은 마음과 잘 연결돼요.",verse:"시편 23:6 — 내 평생에 선하심과 인자하심이 반드시 나를 따르리니",tags:["사랑","예배"]},
- {title:"회복시키소서",videoId:"v2K7K0s3g3N",themes:["회개","회복","새출발","기도"],desc:"마음을 돌아보고 하나님께 다시 나아가며 회복을 구하는 주제에 어울려요.",verse:"시편 51:10 — 내 안에 정직한 영을 새롭게 하소서",tags:["회개","회복"]}
+ {title:"주가 일하시네",query:"주가 일하시네 찬양",themes:["위로","신뢰","믿음","기다림","힘듦"],desc:"내가 모든 상황을 해결할 수 없을 때에도 하나님을 신뢰하며 기다리는 마음을 담은 찬양입니다.",verse:"시편 37:5 — 네 길을 여호와께 맡기라 그를 의지하면 그가 이루시고",tags:["신뢰","기다림"]},
+ {title:"주의 은혜라",query:"주의 은혜라 찬양",themes:["감사","은혜","위로","사랑"],desc:"지나온 시간을 돌아보며 모든 순간에 함께한 은혜를 감사하는 주제와 어울려요.",verse:"고린도후서 12:9 — 내 은혜가 네게 족하도다",tags:["은혜","감사"]},
+ {title:"내 영혼은 안전합니다",query:"내 영혼은 안전합니다 찬양",themes:["위로","불안","평안","두려움","힘듦"],desc:"상황이 흔들려도 하나님 안에서 평안을 구하고 싶은 마음과 연결해 볼 수 있어요.",verse:"시편 46:1 — 하나님은 우리의 피난처시요 힘이시니",tags:["평안","위로"]},
+ {title:"나는 주를 섬기는 것에 후회가 없습니다",query:"나는 주를 섬기는 것에 후회가 없습니다 찬양",themes:["믿음","결단","헌신","의지"],desc:"하나님을 따르겠다는 믿음과 삶의 방향을 다시 다짐하고 싶을 때 어울리는 주제예요.",verse:"여호수아 24:15 — 오직 나와 내 집은 여호와를 섬기겠노라",tags:["믿음","결단"]},
+ {title:"감사",query:"범사에 감사 찬양",themes:["감사","기쁨","은혜"],desc:"평범한 하루와 주어진 것들을 돌아보며 감사의 마음을 표현하고 싶을 때 선택할 수 있어요.",verse:"데살로니가전서 5:18 — 범사에 감사하라",tags:["감사","기쁨"]},
+ {title:"주의 사랑을 주의 선하심을",query:"주의 사랑을 주의 선하심을 찬양",themes:["사랑","예배","감사","은혜"],desc:"하나님의 사랑과 선하심을 기억하며 예배하고 싶은 마음과 잘 연결돼요.",verse:"시편 23:6 — 내 평생에 선하심과 인자하심이 반드시 나를 따르리니",tags:["사랑","예배"]},
+ {title:"회복시키소서",query:"회복시키소서 찬양",themes:["회개","회복","새출발","기도"],desc:"마음을 돌아보고 하나님께 다시 나아가며 회복을 구하는 주제에 어울려요.",verse:"시편 51:10 — 내 안에 정직한 영을 새롭게 하소서",tags:["회개","회복"]}
 ];
 const request=document.getElementById('request'), results=document.getElementById('results');
 document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{request.value=b.dataset.prompt;request.focus()}));
@@ -111,21 +116,32 @@ function render(items){
    <div class="scripture">📖 ${s.verse}</div>
    <div class="actions">
     <button class="secondary" data-reveal="${i}">제목 확인하기</button>
-    <button class="secondary" data-play="${i}">앱 안에서 바로 듣기</button>
+    <button class="gold-btn" data-play="${i}">▶ 앱 안에서 바로 듣기</button>
    </div>
-   <div class="player-box" id="player-${i}"></div>
+   <div class="player-wrap" id="wrap-${i}">
+    <div class="player-box" id="player-${i}"></div>
+    <div class="player-tip">
+     <span>재생이 제한된 영상일 경우:</span>
+     <button class="fallback-link" data-ext="${i}">유튜브에서 직접 열기 ↗</button>
+    </div>
+   </div>
    <div class="status">안전성: 확인 필요 · 공식 자료를 통한 별도 확인이 필요합니다.</div>`;
   results.appendChild(card);
   card.querySelector('[data-reveal]').addEventListener('click',()=>{card.querySelector(`#title-${i}`).hidden=true;card.querySelector(`#shown-${i}`).hidden=false});
   card.querySelector('[data-play]').addEventListener('click',()=>{
+   const wrap=card.querySelector(`#wrap-${i}`);
    const box=card.querySelector(`#player-${i}`);
-   if(box.style.display==='block'){
-    box.style.display='none';
+   if(wrap.style.display==='block'){
+    wrap.style.display='none';
     box.innerHTML='';
    }else{
-    box.style.display='block';
-    box.innerHTML=`<iframe src="https://www.youtube.com/embed/${s.videoId}?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    wrap.style.display='block';
+    const searchUrl=`https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(s.query)}`;
+    box.innerHTML=`<iframe src="${searchUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
    }
+  });
+  card.querySelector('[data-ext]').addEventListener('click',()=>{
+   window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(s.query),'_blank','noopener');
   });
  });
 }
